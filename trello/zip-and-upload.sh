@@ -15,4 +15,4 @@ echo "Renaming $LAST_BACKUP_DIR to ${LAST_BACKUP_DIR}_archived ..."
 mv $LAST_BACKUP_DIR "${LAST_BACKUP_DIR}_archived"
 
 echo "✅ Done."
-echo "ℹ️ Next steps: clean up old backups, and store the last backup somewhere safe."
+echo "ℹ️ Next steps: run ./clean-up.sh"

@@ -16,4 +16,4 @@ docker run -t -e TRELLO_API_KEY=$TRELLO_API_KEY -e TRELLO_TOKEN=$TRELLO_TOKEN \
            # --closed-boards --archived-cards
 
 echo "✅ Done."
-echo "ℹ️ Next steps: run ./diff-changes.sh, clean up old backups, and store the last backup somewhere safe."
+echo "ℹ️ Next steps: run ./diff-changes.sh && zip-and-upload.sh && ./clean-up.sh"

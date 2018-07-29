@@ -1,3 +1,4 @@
 .env
 *_backup
+*_backup_archived
 *_backup.*

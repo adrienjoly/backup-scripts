@@ -32,3 +32,4 @@ REMOVALS="$(grep '^- ' $OUTPUT_FILE | wc -l | tr -d ' ')"
 echo "🗒 found $CHANGES changes since last backup (+$ADDITIONS -$REMOVALS)"
 
 echo "✅ Done."
+echo "ℹ️ Next steps: run zip-and-upload.sh && ./clean-up.sh"
