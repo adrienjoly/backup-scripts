@@ -26,4 +26,9 @@ echo "Generating diff of last two backups => $OUTPUT_FILE ..."
 
 diff -r --brief $DIR1 $DIR2 | sed -e "s/Only in $DIR2/+ /g" -e "s/Only in $DIR1/- /g" >$OUTPUT_FILE
 
+CHANGES="$(cat $OUTPUT_FILE | wc -l | tr -d ' ')"
+ADDITIONS="$(grep '^+ ' $OUTPUT_FILE | wc -l | tr -d ' ')"
+REMOVALS="$(grep '^- ' $OUTPUT_FILE | wc -l | tr -d ' ')"
+echo "🗒 found $CHANGES changes since last backup (+$ADDITIONS -$REMOVALS)"
+
 echo "✅ Done."
