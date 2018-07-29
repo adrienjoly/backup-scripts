@@ -22,8 +22,8 @@ OUTPUT_FILE="diff-from-$DIR1-to-$DIR2.log"
 
 echo "Generating diff of last two backups => $OUTPUT_FILE ..."
 # LAST_TWO_FILES="$(ls -1 *.txt | tail -2)"
-# git diff $LAST_TWO_FILES >../$OUTPUT_FILE
+# git diff $LAST_TWO_FILES >$OUTPUT_FILE
 
-diff -r --brief $DIR1 $DIR2 | sed -e "s/Only in $DIR2/+ /g" -e "s/Only in $DIR1/- /g" >../$OUTPUT_FILE
+diff -r --brief $DIR1 $DIR2 | sed -e "s/Only in $DIR2/+ /g" -e "s/Only in $DIR1/- /g" >$OUTPUT_FILE
 
 echo "✅ Done."
