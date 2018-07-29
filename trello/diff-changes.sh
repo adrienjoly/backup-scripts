@@ -1,3 +1,5 @@
+set -e # this script will exit if any command returns a non-null value
+
 tree () {
   find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 }
