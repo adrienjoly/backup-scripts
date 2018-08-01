@@ -14,11 +14,11 @@ const makeCharacterPicker = characters => {
   };
 }
 
-const pickLetter = makeCharacterPicker('abcdefghijklmnopqrstuvwxyz');
+const pickLetter = () => 'a'; // makeCharacterPicker('abcdefghijklmnopqrstuvwxyz'); // TODO: re-enable
 const pickNumber = makeCharacterPicker('0123456789');
 
 const scrambleText = text => text
-  .replace(/[0-9]/g, pickNumber)
+  // .replace(/[0-9]/g, pickNumber) // TODO: re-enable
   .replace(/[a-z]/g, pickLetter)
   .replace(/[A-Z]/g, () => pickLetter().toUpperCase())
 
