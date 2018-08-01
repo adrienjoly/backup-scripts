@@ -8,7 +8,7 @@ const nodes = require(`./${filename}`).data.bulletpoints;
 
 console.warn('creating node index ...');
 
-// nodeSet schema: { nodeId -> (bullet_client_id, parent_client_id, content, childrenIds) }
+// => nodeSet schema: { nodeId -> (bullet_client_id, parent_client_id, content, childrenIds) }
 const indexInNodeSet = (nodeSet, node) => ({
   ...nodeSet,
   // store node content without overwriting childrenIds
@@ -26,10 +26,22 @@ const indexInNodeSet = (nodeSet, node) => ({
   },
 });
 
-const nodeSet = nodes.reduce(indexInNodeSet, {});
+// generate getChildNodes() and rootNodes based on node index
+const { getChildNodes, rootNodes } = (() => {
+  const nodeSet = nodes.reduce(indexInNodeSet, {});
+  const byPosition = (a, b) =>
+    nodeSet[a.bullet_client_id].position - nodeSet[b.bullet_client_id].position;
+  const getChildNodes = node => (node.childrenIds || [])
+    .map(nodeId => nodeSet[nodeId])
+    .sort(byPosition)
+  return {
+    getChildNodes,
+    rootNodes: getChildNodes(nodeSet[0]),
+  };
+})();
 
-const byPosition = (a, b) =>
-  nodeSet[a.bullet_client_id].position - nodeSet[b.bullet_client_id].position;
+// ===
+// rendering functions
 
 const renderHTML = html => html
   .replace(/<[^>]*>/g, '')
@@ -44,17 +56,18 @@ const renderTextContent = content => {
 };
 
 const indent = (text, depth = 0) => `${''.padStart(depth * 2)}${text}`;
-const renderIndentedNode = (node, depth = 0) => 
-  (node.content ? [ indent(`- ${renderTextContent(node.content)}`, depth) ] : [])
-    .concat((node.childrenIds || [])
-      .map(childId => nodeSet[childId])
-      .sort(byPosition)
-      .map(node => renderIndentedNode(node, depth + 1))
-    )
-    .join('\n');
 
-const rendered = renderIndentedNode(nodeSet[0], -1)
-console.log(rendered);
+const renderIndentedNodes = (logFct, nodes = [], depth = 0) => nodes
+  .forEach(node => {
+    logFct(indent(`- ${renderTextContent(node.content)}`, depth)),
+    renderIndentedNodes(logFct, getChildNodes(node), depth + 1);
+  });
+
+// ===
+// actual rendering
+
+renderIndentedNodes(console.log, rootNodes);
+
 // TODO also render to YAML objects (incl. urls of links and basic text formatting)
 // TODO also render to HTML (incl. urls of links and basic text formatting)
 
