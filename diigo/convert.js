@@ -51,8 +51,8 @@ const renderHTML = html => html
 
 const renderTextContent = content => {
   const text = renderHTML(content);
-  return text;
-  // return /^\{.*\}$/.test(text) ? JSON.parse(text).title : text; // TODO: parse json links after making sure that the scrambler returns valid json at all times
+  return /^\{.*\}$/.test(text) ? JSON.parse(text).title : text;
+  // TODO: also include plain text that may surround the JSON links
   // TODO: create a different function that is able to also extract the `url` field of the JSON
 };
 
