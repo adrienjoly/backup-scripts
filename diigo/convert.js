@@ -7,15 +7,20 @@ console.warn(`reading ${filename} ...`);
 const nodes = require(`./${filename}`).data.bulletpoints;
 
 console.warn('creating node index ...');
+
 const nodeSet = nodes.reduce((nodeSet, node) => ({
   ...nodeSet,
-  [node.bullet_client_id]: node,
-}), {});
-
-console.warn('enumerating node children ...');
-const nodeChidren = nodes.reduce((nodeChidren, node) => ({
-  ...nodeChidren,
-  [node.parent_client_id]: (nodeChidren[node.parent_client_id] || []).concat(node.bullet_client_id),
+  [node.bullet_client_id]: {
+    ...nodeSet[node.bullet_client_id],
+    ...node
+  },
+  [node.parent_client_id]: {
+    ...nodeSet[node.parent_client_id],
+    childrenIds: [
+      ...(nodeSet[node.parent_client_id] || {}).childrenIds || [],
+      node.bullet_client_id,
+    ],
+  },
 }), {});
 
 const byPosition = (a, b) =>
@@ -23,7 +28,7 @@ const byPosition = (a, b) =>
 
 const recurseChildren = nodeId => ({
   ...nodeSet[nodeId],
-  childNodes: (nodeChidren[nodeId] || [])
+  childNodes: (nodeSet[nodeId].childrenIds || [])
     .map(recurseChildren)
     .sort(byPosition)
 });
