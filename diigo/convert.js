@@ -10,13 +10,13 @@ console.warn('creating node index ...');
 const nodeSet = nodes.reduce((nodeSet, node) => ({
   ...nodeSet,
   [node.bullet_client_id]: node,
-}));
+}), {});
 
 console.warn('enumerating node children ...');
 const nodeChidren = nodes.reduce((nodeChidren, node) => ({
   ...nodeChidren,
   [node.parent_client_id]: (nodeChidren[node.parent_client_id] || []).concat(node.bullet_client_id),
-}));
+}), {});
 
 const byPosition = (a, b) =>
   nodeSet[a.bullet_client_id].position - nodeSet[b.bullet_client_id].position;
