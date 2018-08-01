@@ -8,12 +8,15 @@ const nodes = require(`./${filename}`).data.bulletpoints;
 
 console.warn('creating node index ...');
 
-const nodeSet = nodes.reduce((nodeSet, node) => ({
+// nodeSet schema: { nodeId -> (bullet_client_id, parent_client_id, content, childrenIds) }
+const indexInNodeSet = (nodeSet, node) => ({
   ...nodeSet,
+  // store node content without overwriting childrenIds
   [node.bullet_client_id]: {
     ...nodeSet[node.bullet_client_id],
     ...node
   },
+  // append bullet_client_id to childrenIds array of parent node
   [node.parent_client_id]: {
     ...nodeSet[node.parent_client_id],
     childrenIds: [
@@ -21,20 +24,12 @@ const nodeSet = nodes.reduce((nodeSet, node) => ({
       node.bullet_client_id,
     ],
   },
-}), {});
+});
+
+const nodeSet = nodes.reduce(indexInNodeSet, {});
 
 const byPosition = (a, b) =>
   nodeSet[a.bullet_client_id].position - nodeSet[b.bullet_client_id].position;
-
-const recurseChildren = nodeId => ({
-  ...nodeSet[nodeId],
-  childNodes: (nodeSet[nodeId].childrenIds || [])
-    .map(recurseChildren)
-    .sort(byPosition)
-});
-
-console.warn('recreating node tree ...');
-const nodeTree = recurseChildren(0); // or log(recurseChildren)(0)
 
 const renderHTML = html => html
   .replace(/<[^>]*>/g, '')
@@ -50,10 +45,16 @@ const renderTextContent = content => {
 
 const indent = (text, depth = 0) => `${''.padStart(depth * 2)}${text}`;
 const renderIndentedNode = (node, depth = 0) => 
-  [ indent(`- ${renderTextContent(node.content)}`, depth) ]
-    .concat(node.childNodes.map(node => renderIndentedNode(node, depth + 1)))
+  (node.content ? [ indent(`- ${renderTextContent(node.content)}`, depth) ] : [])
+    .concat((node.childrenIds || [])
+      .map(childId => nodeSet[childId])
+      .sort(byPosition)
+      .map(node => renderIndentedNode(node, depth + 1))
+    )
     .join('\n');
 
-console.log(renderIndentedNode(nodeTree.childNodes[0]));
+const rendered = renderIndentedNode(nodeSet[0], -1)
+console.log(rendered);
 // TODO also render to YAML objects (incl. urls of links and basic text formatting)
 // TODO also render to HTML (incl. urls of links and basic text formatting)
+
