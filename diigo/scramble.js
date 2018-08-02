@@ -33,10 +33,16 @@ const makeScrambler = () => {
 const scrambleText = makeScrambler();
 
 const makeScramblerWithCustomRules = ({ rules }) => content => {
+  if (!content.match(rules[0].detectionRegEx)) {
+    return scrambleText(content);
+  }
   const plainTexts = content.split(rules[0].detectionRegEx).map(scrambleText);
+  console.warn(`detected matches for rule ${rules[0].detectionRegEx} => splitted in ${plainTexts.length}`);
   let customRenders = [];
   let lastMatch;
   while (lastMatch = rules[0].extractionRegEx.exec(content)) {
+    console.warn('rendering from', lastMatch);
+    console.warn('=>', rules[0].renderMatch(lastMatch));
     customRenders.push(rules[0].renderMatch(lastMatch));
   }
   const scrambled = plainTexts
@@ -62,22 +68,15 @@ const scrambleContent = content => {
         return `<span class="diigoItemFlag">${JSON.stringify(data)}</span>`;
       },
     },
-    /*
-    {
-      detectionRegEx: /<a [^>]*>([^<]*)<\/a>/g,
-      extractionRegEx: /<a.*href="([^"])"[^>]*>([^<]*)<\/a>/g,
-      renderMatch: match => {
-        const link = JSON.parse(lastMatch[1]);
-        // const scrambleText = makeScrambler(); // make a separate scrambler, in order to avoid side effects to scrambling of plain-text content
-        const data = {
-          ...link,
-          title: scrambleText(link.title),
-          url: link.url ? scrambleText(link.url) : undefined,
-        };
-        return !data ? '' : `<span class="diigoItemFlag">${JSON.stringify(data)}</span>`;
-      },
-    },
-    */
+    // {
+    //   detectionRegEx: /<a [^>]*>[^<]*<\/a>/g,
+    //   extractionRegEx: /<a.*href=\"([^\"])\"[^>]*>([^<]*)<\/a>/g,
+    //   renderMatch: match => {
+    //     const [ fullMatch, href, title ] = match;
+    //     // const scrambleText = makeScrambler(); // make a separate scrambler, in order to avoid side effects to scrambling of plain-text content
+    //     return `<a href="${scrambleText(href)}">${scrambleText(title)}</a>`;
+    //   },
+    // },
   ];
   const scrambleWithCustomRule = makeScramblerWithCustomRules({ rules });
   return scrambleWithCustomRule(content);
