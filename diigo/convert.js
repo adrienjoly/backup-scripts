@@ -44,7 +44,7 @@ const { getChildNodes, rootNodes } = (() => {
 // rendering functions
 
 const renderHTML = html => html
-  .replace(/<[^>]*>/g, '')
+  // .replace(/<[^>]*>/g, '') // TODO: re-enable ?
   .replace(/&gt;/, '>');
   // TODO: also replace other HTML entities
   // TODO: create a different function that is able to interpret hyperlinks
@@ -70,5 +70,4 @@ const renderIndentedNodes = (logFct, nodes = [], depth = 0) => nodes
 renderIndentedNodes(console.log, rootNodes);
 
 // TODO also render to YAML objects (incl. urls of links and basic text formatting)
-// TODO also render to HTML (incl. urls of links and basic text formatting)
 
