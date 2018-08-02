@@ -37,10 +37,10 @@ const makeScramblerWithCustomRules = ({ rules }) => content => {
   let customRenders = [];
   let lastMatch;
   while (lastMatch = rules[0].extractionRegEx.exec(content)) {
-    customRenders.push(renderMatch(lastMatch));
+    customRenders.push(rules[0].renderMatch(lastMatch));
   }
   const scrambled = plainTexts
-    .map(text => text + customRenders.shift())
+    .map(text => text + (customRenders.shift() || ''))
     .join('');
   // console.warn('=>', scrambled);
   return scrambled;
@@ -49,8 +49,23 @@ const makeScramblerWithCustomRules = ({ rules }) => content => {
 const scrambleContent = content => {
   const rules = [
     {
-      detectionRegEx:/*RE_LINK*/ /<span class=\"diigoItemFlag\">\{[^\}]*\}<\/span>/g,
-      extractionRegEx:/*RE_JSON_LINK*/ /<span class=\"diigoItemFlag\">(\{[^\}]*\})<\/span>/g,
+      detectionRegEx: /<span class=\"diigoItemFlag\">\{[^\}]*\}<\/span>/g,
+      extractionRegEx: /<span class=\"diigoItemFlag\">(\{[^\}]*\})<\/span>/g,
+      renderMatch: match => {
+        const link = JSON.parse(match[1]);
+        // const scrambleText = makeScrambler(); // make a separate scrambler, in order to avoid side effects to scrambling of plain-text content
+        const data = {
+          ...link,
+          title: scrambleText(link.title),
+          url: link.url ? scrambleText(link.url) : undefined,
+        };
+        return `<span class="diigoItemFlag">${JSON.stringify(data)}</span>`;
+      },
+    },
+    /*
+    {
+      detectionRegEx: /<a [^>]*>([^<]*)<\/a>/g,
+      extractionRegEx: /<a.*href="([^"])"[^>]*>([^<]*)<\/a>/g,
       renderMatch: match => {
         const link = JSON.parse(lastMatch[1]);
         // const scrambleText = makeScrambler(); // make a separate scrambler, in order to avoid side effects to scrambling of plain-text content
@@ -62,6 +77,7 @@ const scrambleContent = content => {
         return !data ? '' : `<span class="diigoItemFlag">${JSON.stringify(data)}</span>`;
       },
     },
+    */
   ];
   const scrambleWithCustomRule = makeScramblerWithCustomRules({ rules });
   return scrambleWithCustomRule(content);
