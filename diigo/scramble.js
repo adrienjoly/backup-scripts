@@ -32,28 +32,39 @@ const makeScrambler = () => {
 
 const scrambleText = makeScrambler();
 
-const RE_JSON_LINK = /<span class=\"diigoItemFlag\">(\{[^\}]*\})<\/span>/g;
-const RE_LINK = /<span class=\"diigoItemFlag\">\{[^\}]*\}<\/span>/g;
-
-const scrambleContent = content => {
-  const plainTexts = content.split(RE_LINK).map(scrambleText);
-  let jsonLinks = [];
+const makeScramblerWithCustomRules = ({ rules }) => content => {
+  const plainTexts = content.split(rules[0].detectionRegEx).map(scrambleText);
+  let customRenders = [];
   let lastMatch;
-  while (lastMatch = RE_JSON_LINK.exec(content)) {
-    const link = JSON.parse(lastMatch[1]);
-    // const scrambleText = makeScrambler(); // make a separate scrambler, in order to avoid side effects to scrambling of plain-text content
-    jsonLinks.push({
-      ...link,
-      title: scrambleText(link.title),
-      url: link.url ? scrambleText(link.url) : undefined,
-    });
+  while (lastMatch = rules[0].extractionRegEx.exec(content)) {
+    customRenders.push(renderMatch(lastMatch));
   }
-  const renderJsonLink = json => !json ? '' : `<span class="diigoItemFlag">${JSON.stringify(json)}</span>`;
   const scrambled = plainTexts
-    .map(text => text + renderJsonLink(jsonLinks.shift()))
+    .map(text => text + customRenders.shift())
     .join('');
   // console.warn('=>', scrambled);
   return scrambled;
+};
+
+const scrambleContent = content => {
+  const rules = [
+    {
+      detectionRegEx:/*RE_LINK*/ /<span class=\"diigoItemFlag\">\{[^\}]*\}<\/span>/g,
+      extractionRegEx:/*RE_JSON_LINK*/ /<span class=\"diigoItemFlag\">(\{[^\}]*\})<\/span>/g,
+      renderMatch: match => {
+        const link = JSON.parse(lastMatch[1]);
+        // const scrambleText = makeScrambler(); // make a separate scrambler, in order to avoid side effects to scrambling of plain-text content
+        const data = {
+          ...link,
+          title: scrambleText(link.title),
+          url: link.url ? scrambleText(link.url) : undefined,
+        };
+        return !data ? '' : `<span class="diigoItemFlag">${JSON.stringify(data)}</span>`;
+      },
+    },
+  ];
+  const scrambleWithCustomRule = makeScramblerWithCustomRules({ rules });
+  return scrambleWithCustomRule(content);
   // TODO: also leave HTML elements as is
 };
 
