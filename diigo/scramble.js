@@ -1,4 +1,5 @@
 // this script encrypts personal content of an outliner JSON dump
+// usage: node scramble.js diigo-outliner-private.json >diigo-outliner-sample.json
 
 const filename = process.argv[2] || 'diigo-outliner-private.json';
 
