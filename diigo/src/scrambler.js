@@ -53,13 +53,13 @@ const makeScramblerWithCustomRules = ({ rules }) => content => {
     return replacements;  
   };
 
-  const scrambled = rules
+  const scrambledReplacements = rules
     .map(getReplacements)
     .reduce((flattened, arr) => [...flattened, ...arr], []) // flatMap would be awesome
     .sort(byPos)
-    .map(({ replacement }) => plainTexts.shift() + replacement).join('');
+    .map(({ replacement }) => plainTexts.shift() + replacement);
 
-  return scrambled + plainTexts.join('');
+  return scrambledReplacements.join('') + plainTexts.join('');
 };
 
 const scrambleContent = content => {

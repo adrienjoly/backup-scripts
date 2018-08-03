@@ -1,5 +1,5 @@
 // converts the JSON dump of a Diigo Outliner into a markdown file
-// usage: node convert.js diigo-outliner-sample.json >>diigo-outliner-sample.converted.md
+// usage: node convert.js diigo-outliner-sample.json >diigo-outliner-sample.converted.md
 
 const filename = process.argv[2] || 'diigo-outliner-sample.json';
 
