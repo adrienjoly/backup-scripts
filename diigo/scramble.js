@@ -40,18 +40,20 @@ const makeScramblerWithCustomRules = ({ rules }) => content => {
   const plainTexts = content.split(detectionRegEx).map(scrambleText);
   let scrambled = '';
   //console.warn(`detected matches for rule ${rules[0].detectionRegEx} => splitted in ${plainTexts.length}`);
-  //let customRenders = [];
-  let lastMatch;
-  while (lastMatch = (rules[0].extractionRegEx || rules[0].detectionRegEx).exec(content)) {
-    //console.warn('=>', rules[0].renderMatch(lastMatch));
-    //customRenders.push(rules[0].renderMatch(lastMatch));
-    scrambled += plainTexts.shift() + rules[0].renderMatch(lastMatch);
-  }
-  /*
-  const scrambled = plainTexts
-    .map(text => text + (customRenders.shift() || ''))
-    .join('');
-  */
+
+  const getReplacements = rule => {
+    const replacements = [];
+    while (lastMatch = (rule.extractionRegEx || rule.detectionRegEx).exec(content)) {
+      //console.warn('=>', rule.renderMatch(lastMatch));
+      //customRenders.push(rule.renderMatch(lastMatch));
+      replacements.push(rule.renderMatch(lastMatch));
+    }
+    return replacements;  
+  };
+
+  const replacements = getReplacements(rules[0]);
+  scrambled += replacements.map(replacement => plainTexts.shift() + replacement).join('');
+
   // console.warn('=>', scrambled);
   return scrambled + plainTexts.join('');
 };
