@@ -6,6 +6,9 @@ const filename = process.argv[2] || 'diigo-outliner-private.json';
 console.warn(`reading ${filename} ...`);
 const json = require(`./${filename}`);
 
+// sorting criteria
+const byPos = (a, b) => a.pos - b.pos;
+
 const makeCharacterPicker = characters => {
   let next = 0;
   return () => {
@@ -33,28 +36,37 @@ const makeScrambler = () => {
 const scrambleText = makeScrambler();
 
 const makeScramblerWithCustomRules = ({ rules }) => content => {
-  const detectionRegEx = rules[0].detectionRegEx; // TODO: new RegExp(rules.map(regex => `(${regex.toString()})`).join('|'));
+  const combinedRegex = rules.map(({ detectionRegEx }) =>
+    `(?:${ detectionRegEx.toString().substring(1, detectionRegEx.toString().length - 2) })`
+  ).join('|')
+  const detectionRegEx = new RegExp(combinedRegex, 'g');
+
+  // optimisation: quit early if content does not require any custom replacements
   if (!content.match(detectionRegEx)) {
     return scrambleText(content);
   }
-  const plainTexts = content.split(detectionRegEx).map(scrambleText);
-  let scrambled = '';
-  //console.warn(`detected matches for rule ${rules[0].detectionRegEx} => splitted in ${plainTexts.length}`);
 
+  // get rid of parts that need custom scrambling
+  const plainTexts = content.split(detectionRegEx).map(scrambleText);
+
+  // given a replacement rule, this function generates an array of replacements to be done in the content
   const getReplacements = rule => {
     const replacements = [];
     while (lastMatch = (rule.extractionRegEx || rule.detectionRegEx).exec(content)) {
-      //console.warn('=>', rule.renderMatch(lastMatch));
-      //customRenders.push(rule.renderMatch(lastMatch));
-      replacements.push(rule.renderMatch(lastMatch));
+      replacements.push({
+        pos: lastMatch.index,
+        replacement: rule.renderMatch(lastMatch),
+      });
     }
     return replacements;  
   };
 
-  const replacements = getReplacements(rules[0]);
-  scrambled += replacements.map(replacement => plainTexts.shift() + replacement).join('');
+  const scrambled = rules
+    .map(getReplacements)
+    .reduce((flattened, arr) => [...flattened, ...arr], []) // flatMap would be awesome
+    .sort(byPos)
+    .map(({ replacement }) => plainTexts.shift() + replacement).join('');
 
-  // console.warn('=>', scrambled);
   return scrambled + plainTexts.join('');
 };
 
@@ -74,12 +86,12 @@ const scrambleContent = content => {
         return `<span class="diigoItemFlag">${JSON.stringify(data)}</span>`;
       },
     },
-    // {
-    //   detectionRegEx: /<a [^>]*>[^<]*<\/a>/g,
-    //   extractionRegEx: /<a .*href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>/g,
-    //   renderMatch: ([ fullMatch, url, title ]) =>
-    //     `<a href="${scrambleText(url)}">${scrambleText(title)}</a>`,
-    // },
+    {
+      detectionRegEx: /<a [^>]*>[^<]*<\/a>/g,
+      extractionRegEx: /<a .*href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>/g,
+      renderMatch: ([ fullMatch, url, title ]) =>
+        `<a href="${scrambleText(url)}">${scrambleText(title)}</a>`,
+    },
   ];
   const scrambleWithCustomRule = makeScramblerWithCustomRules({ rules });
   return scrambleWithCustomRule(content);
