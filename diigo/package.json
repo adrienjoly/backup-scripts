@@ -1,0 +1,22 @@
+{
+  "name": "diigo-export",
+  "version": "1.0.0",
+  "description": "Tools to export bookmarkers and outliner notes from diigo.com",
+  "main": "convert.js",
+  "scripts": {
+    "test": "jest --env=node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adrienjoly/backup-scripts.git"
+  },
+  "author": "Adrien Joly",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adrienjoly/backup-scripts/issues"
+  },
+  "homepage": "https://github.com/adrienjoly/backup-scripts#readme",
+  "devDependencies": {
+    "jest": "^23.4.2"
+  }
+}

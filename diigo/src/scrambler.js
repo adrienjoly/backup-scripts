@@ -93,7 +93,7 @@ const scrambleContent = content => {
 const scrambleNode = node => ({
   ...node,
   content: scrambleContent(node.content),
-  description: scrambleText(node.description),
+  description: scrambleText(node.description || ''),
 });
 
 module.exports = {
