@@ -33,23 +33,27 @@ const makeScrambler = () => {
 const scrambleText = makeScrambler();
 
 const makeScramblerWithCustomRules = ({ rules }) => content => {
-  // TODO: support more than 1 rule at once
-  if (!content.match(rules[0].detectionRegEx)) {
+  const detectionRegEx = rules[0].detectionRegEx; // TODO: new RegExp(rules.map(regex => `(${regex.toString()})`).join('|'));
+  if (!content.match(detectionRegEx)) {
     return scrambleText(content);
   }
-  const plainTexts = content.split(rules[0].detectionRegEx).map(scrambleText);
+  const plainTexts = content.split(detectionRegEx).map(scrambleText);
+  let scrambled = '';
   //console.warn(`detected matches for rule ${rules[0].detectionRegEx} => splitted in ${plainTexts.length}`);
-  let customRenders = [];
+  //let customRenders = [];
   let lastMatch;
   while (lastMatch = (rules[0].extractionRegEx || rules[0].detectionRegEx).exec(content)) {
     //console.warn('=>', rules[0].renderMatch(lastMatch));
-    customRenders.push(rules[0].renderMatch(lastMatch));
+    //customRenders.push(rules[0].renderMatch(lastMatch));
+    scrambled += plainTexts.shift() + rules[0].renderMatch(lastMatch);
   }
+  /*
   const scrambled = plainTexts
     .map(text => text + (customRenders.shift() || ''))
     .join('');
+  */
   // console.warn('=>', scrambled);
-  return scrambled;
+  return scrambled + plainTexts.join('');
 };
 
 const scrambleContent = content => {
