@@ -33,16 +33,16 @@ const makeScrambler = () => {
 const scrambleText = makeScrambler();
 
 const makeScramblerWithCustomRules = ({ rules }) => content => {
+  // TODO: support more than 1 rule at once
   if (!content.match(rules[0].detectionRegEx)) {
     return scrambleText(content);
   }
   const plainTexts = content.split(rules[0].detectionRegEx).map(scrambleText);
-  console.warn(`detected matches for rule ${rules[0].detectionRegEx} => splitted in ${plainTexts.length}`);
+  //console.warn(`detected matches for rule ${rules[0].detectionRegEx} => splitted in ${plainTexts.length}`);
   let customRenders = [];
   let lastMatch;
-  while (lastMatch = rules[0].extractionRegEx.exec(content)) {
-    console.warn('rendering from', lastMatch);
-    console.warn('=>', rules[0].renderMatch(lastMatch));
+  while (lastMatch = (rules[0].extractionRegEx || rules[0].detectionRegEx).exec(content)) {
+    //console.warn('=>', rules[0].renderMatch(lastMatch));
     customRenders.push(rules[0].renderMatch(lastMatch));
   }
   const scrambled = plainTexts
@@ -70,12 +70,9 @@ const scrambleContent = content => {
     },
     // {
     //   detectionRegEx: /<a [^>]*>[^<]*<\/a>/g,
-    //   extractionRegEx: /<a.*href=\"([^\"])\"[^>]*>([^<]*)<\/a>/g,
-    //   renderMatch: match => {
-    //     const [ fullMatch, href, title ] = match;
-    //     // const scrambleText = makeScrambler(); // make a separate scrambler, in order to avoid side effects to scrambling of plain-text content
-    //     return `<a href="${scrambleText(href)}">${scrambleText(title)}</a>`;
-    //   },
+    //   extractionRegEx: /<a .*href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>/g,
+    //   renderMatch: ([ fullMatch, url, title ]) =>
+    //     `<a href="${scrambleText(url)}">${scrambleText(title)}</a>`,
     // },
   ];
   const scrambleWithCustomRule = makeScramblerWithCustomRules({ rules });
