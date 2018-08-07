@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { DiigoItemFlag, DiigoLink, DiigoFormatting } = require('./diigo');
+const { DiigoItemFlag, DiigoLink, DiigoFormatting, DiigoEmptySpan } = require('./diigo');
 
 // sorting criteria
 const byPos = (a, b) => a.pos - b.pos;
@@ -95,6 +95,10 @@ const scrambleContent = content => {
         classes,
         text: scrambleText(text),
       }),
+    },
+    {
+      ...DiigoEmptySpan,
+      renderMatch: DiigoEmptySpan.renderFromData,
     },
   ];
   const scrambleWithCustomRule = makeScramblerWithCustomRules({ rules });

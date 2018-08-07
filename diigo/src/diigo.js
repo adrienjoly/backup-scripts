@@ -25,8 +25,16 @@ const DiigoFormatting = {
   renderFromData: ({ classes, text }) => `<span class="${classes}">${text}</span>`,
 }; // style can be a space-separated combination of: 'text-bold', 'text-italic', 'text-strike'
 
+const DiigoEmptySpan = {
+  detectionRegEx: /<span><\/span>/g,
+  extractionRegEx: /<span><\/span>/g,
+  getMatchData: () => null,
+  renderFromData: () => `<span></span>`,
+};
+
 module.exports = {
   DiigoItemFlag,
   DiigoLink,
   DiigoFormatting,
+  DiigoEmptySpan,
 };
