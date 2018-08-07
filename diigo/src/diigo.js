@@ -17,6 +17,7 @@ const DiigoItemFlag = {
   getMatchData: match => JSON.parse(match[1]),
   renderFromData: data => `<span class="diigoItemFlag">${JSON.stringify(data)}</span>`
 };
+// TODO: support type="image" and type="17" (cf weird-itemflag-types.txt)
 
 const DiigoLink = {
   detectionRegEx: RE_DIIGO_LINK,
