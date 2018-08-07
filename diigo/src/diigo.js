@@ -18,7 +18,15 @@ const DiigoLink = {
   renderFromData: ({ url, title }) => `<a href="${url}">${title}</a>`,
 };
 
+const DiigoFormatting = {
+  detectionRegEx: /<span class=\"text-[^"]*\">[^<]*<\/span>/g,
+  extractionRegEx: /<span class=\"text-([^"]*)\">([^<]*)<\/span>/g,
+  getMatchData: ([ fullMatch, style, text ]) => ({ style, text }),
+  renderFromData: ({ style, text }) => `<span class="text-${style}">${text}</span>`,
+}; // style can be: 'bold', 'italic', 'strike'
+
 module.exports = {
   DiigoItemFlag,
   DiigoLink,
+  DiigoFormatting,
 };

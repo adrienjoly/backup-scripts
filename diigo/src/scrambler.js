@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { DiigoItemFlag, DiigoLink } = require('./diigo');
+const { DiigoItemFlag, DiigoLink, DiigoFormatting } = require('./diigo');
 
 // sorting criteria
 const byPos = (a, b) => a.pos - b.pos;
@@ -87,6 +87,13 @@ const scrambleContent = content => {
       renderMatch: ([ fullMatch, url, title ]) => DiigoLink.renderFromData({
         url: scrambleText(url),
         title: scrambleText(title),
+      }),
+    },
+    {
+      ...DiigoFormatting,
+      renderMatch: ([ fullMatch, style, text ]) => DiigoFormatting.renderFromData({
+        style,
+        text: scrambleText(text),
       }),
     },
   ];
