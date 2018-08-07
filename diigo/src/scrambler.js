@@ -72,44 +72,29 @@ const makeScramblerWithCustomRules = ({ rules }) => content => {
   return scrambledReplacements.join('') + plainTexts.join('');
 };
 
+const scrambleElementData = elementData => ({
+  ...elementData,
+  text: typeof elementData.text === 'string' ? scrambleText(elementData.text) : undefined,
+  title: typeof elementData.title === 'string' ? scrambleText(elementData.title) : undefined,
+  url: typeof elementData.url === 'string' ? scrambleText(elementData.url) : undefined,
+})
+
+const makeDiigoElementScrambler = elementType => ({
+  ...elementType,
+  renderMatch: match =>
+    elementType.renderFromData(
+      scrambleElementData(
+        elementType.getMatchData(match)
+      )
+    )
+});
+
 const scrambleContent = content => {
   const rules = [
-    {
-      ...DiigoItemFlag,
-      renderMatch: match => {
-        const link = DiigoItemFlag.getMatchData(match);
-        // const scrambleText = makeScrambler(); // make a separate scrambler, in order to avoid side effects to scrambling of plain-text content
-        return DiigoItemFlag.renderFromData({
-          ...link,
-          title: scrambleText(link.title),
-          url: link.url ? scrambleText(link.url) : undefined,
-        });
-      },    
-    },
-    {
-      ...DiigoLink,
-      renderMatch: ([ fullMatch, url, title ]) => DiigoLink.renderFromData({
-        url: scrambleText(url),
-        title: scrambleText(title),
-      }),
-    },
-    {
-      ...DiigoFormatting,
-      renderMatch: ([ fullMatch, classes, text ]) => DiigoFormatting.renderFromData({
-        classes,
-        text: scrambleText(text),
-      }),
-    },
-    {
-      ...DiigoBold,
-      renderMatch: match => {
-        const data = DiigoBold.getMatchData(match);
-        return DiigoBold.renderFromData({
-          ...data,
-          text: scrambleText(data.text),
-        });
-      },
-    },
+    makeDiigoElementScrambler(DiigoItemFlag),
+    makeDiigoElementScrambler(DiigoLink),
+    makeDiigoElementScrambler(DiigoFormatting),
+    makeDiigoElementScrambler(DiigoBold),
     {
       ...DiigoEmptySpan,
       renderMatch: DiigoEmptySpan.renderFromData,

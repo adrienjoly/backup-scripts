@@ -32458,7 +32458,7 @@
       },
       {
         "bullet_client_id": "30664730000000000",
-        "content": "<span class=\"diigoItemFlag\">{\"type\":\"image\",\"title\":\"Aaaaa aa aaaaa aaaaaaaaa\",\"linkId\":\"400832554\",\"userId\":\"29454\",\"annotCount\":\"0\",\"isConvert\":false}</span>",
+        "content": "<span class=\"diigoItemFlag\">{\"type\":\"image\",\"title\":\"Aaaaa aa aaaaa aaaaaaaaa\",\"linkId\":\"400832554\",\"userId\":\"29454\",\"annotCount\":\"0\",\"isConvert\":false,\"url\":\"\"}</span>",
         "description": "",
         "tags": null,
         "expand": 1,
@@ -32533,7 +32533,7 @@
       },
       {
         "bullet_client_id": "30665170000000000",
-        "content": "<span class=\"diigoItemFlag\">{\"type\":\"image\",\"title\":\"Aaaaa-Aaa, aa aaaaaaaaa aa aaaa aa aaaa aaa aaaaaaa aaaaaa (aaaaaaaa aaaaa)\",\"linkId\":\"400839175\",\"userId\":\"29454\",\"annotCount\":\"0\",\"isConvert\":false}</span>",
+        "content": "<span class=\"diigoItemFlag\">{\"type\":\"image\",\"title\":\"Aaaaa-Aaa, aa aaaaaaaaa aa aaaa aa aaaa aaa aaaaaaa aaaaaa (aaaaaaaa aaaaa)\",\"linkId\":\"400839175\",\"userId\":\"29454\",\"annotCount\":\"0\",\"url\":\"\",\"isConvert\":false}</span>",
         "description": "",
         "tags": null,
         "expand": 1,
@@ -32548,7 +32548,7 @@
       },
       {
         "bullet_client_id": "30665560000000000",
-        "content": "<span class=\"diigoItemFlag\">{\"isConvert\":false,\"type\":\"image\",\"linkId\":\"400845430\",\"userId\":\"29454\",\"title\":\"aaaaa-20151207\",\"annotCount\":\"0\"}</span>",
+        "content": "<span class=\"diigoItemFlag\">{\"isConvert\":false,\"type\":\"image\",\"linkId\":\"400845430\",\"userId\":\"29454\",\"title\":\"aaaaa-20151207\",\"annotCount\":\"0\",\"url\":\"\"}</span>",
         "description": "",
         "tags": null,
         "expand": 1,
