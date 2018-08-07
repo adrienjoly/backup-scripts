@@ -4,6 +4,13 @@ const RE_DIIGO_ITEM_FLAG_EXTR = /<span class=\"diigoItemFlag\">(\{[^\}]*\})<\/sp
 const RE_DIIGO_LINK = /<a [^>]*>[^<]*<\/a>/g;
 const RE_DIIGO_LINK_EXTR = /href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>/g;
 
+const combineRegexps = regexps => new RegExp(
+  regexps
+    .map(regex => `(?:${ regex.toString().substring(1, regex.toString().length - 2) })`)
+    .join('|'),
+  'g',
+);
+
 const DiigoItemFlag = {
   detectionRegEx: RE_DIIGO_ITEM_FLAG,
   extractionRegEx: RE_DIIGO_ITEM_FLAG_EXTR,
@@ -33,6 +40,7 @@ const DiigoEmptySpan = {
 };
 
 module.exports = {
+  combineRegexps,
   DiigoItemFlag,
   DiigoLink,
   DiigoFormatting,

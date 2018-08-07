@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { DiigoItemFlag, DiigoLink, DiigoFormatting, DiigoEmptySpan } = require('./diigo');
+const { combineRegexps, DiigoItemFlag, DiigoLink, DiigoFormatting, DiigoEmptySpan } = require('./diigo');
 
 // sorting criteria
 const byPos = (a, b) => a.pos - b.pos;
@@ -31,10 +31,7 @@ const makeScrambler = () => {
 const scrambleText = makeScrambler();
 
 const makeScramblerWithCustomRules = ({ rules }) => content => {
-  const combinedRegex = rules.map(({ detectionRegEx }) =>
-    `(?:${ detectionRegEx.toString().substring(1, detectionRegEx.toString().length - 2) })`
-  ).join('|')
-  const detectionRegEx = new RegExp(combinedRegex, 'g');
+  const detectionRegEx = combineRegexps(rules.map(({ detectionRegEx }) => detectionRegEx));
 
   // optimisation: quit early if content does not require any custom replacements
   if (!content.match(detectionRegEx)) {
