@@ -1,6 +1,8 @@
 // converts the JSON dump of a Diigo Outliner into a markdown file
 // usage: node convert.js diigo-outliner-sample.json >diigo-outliner-sample.converted.md
 
+const { DiigoItemFlag } = require('./src/diigo');
+
 const filename = process.argv[2] || 'diigo-outliner-sample.json';
 
 console.warn(`reading ${filename} ...`);
@@ -45,6 +47,10 @@ const { getChildNodes, rootNodes } = (() => {
 
 const renderHTML = html => html
   .replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"[^>]*>([^<]*)<\/a>/g, '[$2]($1)')
+  .replace(DiigoItemFlag.extractionRegEx, function() {
+    const data = DiigoItemFlag.getMatchData(arguments);
+    return `[${data.title}](${data.url})`;
+  })
   // .replace(/<[^>]*>/g, '') // TODO: re-enable ?
   .replace(/&gt;/, '>');
   // TODO: also replace other HTML entities
