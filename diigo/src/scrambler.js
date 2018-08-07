@@ -1,5 +1,12 @@
 const assert = require('assert');
-const { combineRegexps, DiigoItemFlag, DiigoLink, DiigoFormatting, DiigoEmptySpan } = require('./diigo');
+const {
+  combineRegexps,
+  DiigoItemFlag,
+  DiigoLink,
+  DiigoFormatting,
+  DiigoBold,
+  DiigoEmptySpan
+} = require('./diigo');
 
 // sorting criteria
 const byPos = (a, b) => a.pos - b.pos;
@@ -92,6 +99,16 @@ const scrambleContent = content => {
         classes,
         text: scrambleText(text),
       }),
+    },
+    {
+      ...DiigoBold,
+      renderMatch: match => {
+        const data = DiigoBold.getMatchData(match);
+        return DiigoBold.renderFromData({
+          ...data,
+          text: scrambleText(data.text),
+        });
+      },
     },
     {
       ...DiigoEmptySpan,

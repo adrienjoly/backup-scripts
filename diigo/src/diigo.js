@@ -32,6 +32,24 @@ const DiigoFormatting = {
   renderFromData: ({ classes, text }) => `<span class="${classes}">${text}</span>`,
 }; // style can be a space-separated combination of: 'text-bold', 'text-italic', 'text-strike'
 
+const DiigoBold = {
+  detectionRegEx: /<b>[^<]*<\/b>/g,
+  extractionRegEx: /<b>([^<]*)<\/b>/g,
+  getMatchData: ([ fullMatch, text ]) => ({ classes: 'text-bold', text }),
+  renderFromData: DiigoFormatting.renderFromData,
+};
+
+/*
+const DiigoFormattingCombined = {
+  ...DiigoFormatting,
+  detectionRegEx: combineRegexps([DiigoFormatting.detectionRegEx, DiigoBold.detectionRegEx]),
+  extractionRegEx: combineRegexps([DiigoFormatting.extractionRegEx, DiigoBold.extractionRegEx]),
+  getMatchData: match => match.length > 2
+    ? DiigoFormatting.getMatchData(match)
+    : DiigoBold.getMatchData(match),
+};
+*/
+
 const DiigoEmptySpan = {
   detectionRegEx: /<span><\/span>/g,
   extractionRegEx: /<span><\/span>/g,
@@ -44,5 +62,6 @@ module.exports = {
   DiigoItemFlag,
   DiigoLink,
   DiigoFormatting,
+  DiigoBold,
   DiigoEmptySpan,
 };
