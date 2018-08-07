@@ -44,13 +44,12 @@ const { getChildNodes, rootNodes } = (() => {
 // rendering functions
 
 const renderHTML = html => html
-  // .replace(/<a.*href="([^"])"[^>]*>([^<]*)<\/a>/g, '[$2]($1)') // TODO: activate when scrambled sample is able to leave <a> links as-is
+  .replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"[^>]*>([^<]*)<\/a>/g, '[$2]($1)')
   // .replace(/<[^>]*>/g, '') // TODO: re-enable ?
   .replace(/&gt;/, '>');
   // TODO: also replace other HTML entities
-  // TODO: create a different function that is able to interpret hyperlinks
 
-const renderTextContent = content => {
+const renderMarkdownContent = content => {
   const text = renderHTML(content);
   return /^\{.*\}$/.test(text) ? JSON.parse(text).title : text;
   // TODO: also include plain text that may surround the JSON links
@@ -61,7 +60,7 @@ const indent = (text, depth = 0) => `${''.padStart(depth * 2)}${text}`;
 
 const renderIndentedNodes = (logFct, nodes = [], depth = 0) => nodes
   .forEach(node => {
-    logFct(indent(`- ${renderTextContent(node.content)}`, depth)),
+    logFct(indent(`- ${renderMarkdownContent(node.content)}`, depth)),
     renderIndentedNodes(logFct, getChildNodes(node), depth + 1);
   });
 
