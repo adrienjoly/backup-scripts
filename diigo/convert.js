@@ -44,6 +44,7 @@ const { getChildNodes, rootNodes } = (() => {
 // rendering functions
 
 const renderHTML = html => html
+  // .replace(/<a.*href="([^"])"[^>]*>([^<]*)<\/a>/g, '[$2]($1)') // TODO: activate when scrambled sample is able to leave <a> links as-is
   // .replace(/<[^>]*>/g, '') // TODO: re-enable ?
   .replace(/&gt;/, '>');
   // TODO: also replace other HTML entities
