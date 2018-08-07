@@ -32,7 +32,7 @@ describe('scrambler', () => {
 
     const content = "Blogger: <a target=\"_blank\" rel=\"nofollow\" class=\"link\" href=\"https://www.wunderlist.com/#/lists/143792705\">@blogger</a> + <a target=\"_blank\" rel=\"nofollow\" class=\"link\" href=\"https://www.wunderlist.com/#/lists/131400047\">Ideas</a> ";
 
-    const scrambled = "Aaaaaaa: <a href=\"aaaaa://aaa.aaaaaaaaaa.aaa/#/aaaaa/131400047\">@aaaaaaa</a> + <a href=\"aaaaa://aaa.aaaaaaaaaa.aaa/#/aaaaa/131400047\">Aaaaa</a> ";
+    const scrambled = "Aaaaaaa: <a href=\"aaaaa://aaa.aaaaaaaaaa.aaa/#/aaaaa/143792705\">@aaaaaaa</a> + <a href=\"aaaaa://aaa.aaaaaaaaaa.aaa/#/aaaaa/131400047\">Aaaaa</a> ";
 
     expect(scrambleNode({ content })).toHaveProperty('content', scrambled);
 

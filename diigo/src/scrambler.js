@@ -1,3 +1,5 @@
+const assert = require('assert');
+
 // sorting criteria
 const byPos = (a, b) => a.pos - b.pos;
 
@@ -40,11 +42,13 @@ const makeScramblerWithCustomRules = ({ rules }) => content => {
 
   // get rid of parts that need custom scrambling
   const plainTexts = content.split(detectionRegEx).map(scrambleText);
+  const nbSplits = plainTexts.length;
 
   // given a replacement rule, this function generates an array of replacements to be done in the content
   const getReplacements = rule => {
     const replacements = [];
-    while (lastMatch = (rule.extractionRegEx || rule.detectionRegEx).exec(content)) {
+    let lastMatch;
+    while ((lastMatch = (rule.extractionRegEx || rule.detectionRegEx).exec(content)) !== null) {
       replacements.push({
         pos: lastMatch.index,
         replacement: rule.renderMatch(lastMatch),
@@ -59,6 +63,7 @@ const makeScramblerWithCustomRules = ({ rules }) => content => {
     .sort(byPos)
     .map(({ replacement }) => plainTexts.shift() + replacement);
 
+  assert.equal(nbSplits, scrambledReplacements.length + 1);
   return scrambledReplacements.join('') + plainTexts.join('');
 };
 
@@ -80,7 +85,7 @@ const scrambleContent = content => {
     },
     {
       detectionRegEx: /<a [^>]*>[^<]*<\/a>/g,
-      extractionRegEx: /<a .*href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>/g,
+      extractionRegEx: /href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>/g,
       renderMatch: ([ fullMatch, url, title ]) =>
         `<a href="${scrambleText(url)}">${scrambleText(title)}</a>`,
     },
