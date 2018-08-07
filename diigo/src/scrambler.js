@@ -1,4 +1,5 @@
 const assert = require('assert');
+const { DiigoItemFlag, DiigoLink } = require('./diigo');
 
 // sorting criteria
 const byPos = (a, b) => a.pos - b.pos;
@@ -70,24 +71,23 @@ const makeScramblerWithCustomRules = ({ rules }) => content => {
 const scrambleContent = content => {
   const rules = [
     {
-      detectionRegEx: /<span class=\"diigoItemFlag\">\{[^\}]*\}<\/span>/g,
-      extractionRegEx: /<span class=\"diigoItemFlag\">(\{[^\}]*\})<\/span>/g,
+      ...DiigoItemFlag,
       renderMatch: match => {
-        const link = JSON.parse(match[1]);
+        const link = DiigoItemFlag.getMatchData(match);
         // const scrambleText = makeScrambler(); // make a separate scrambler, in order to avoid side effects to scrambling of plain-text content
-        const data = {
+        return DiigoItemFlag.renderFromData({
           ...link,
           title: scrambleText(link.title),
           url: link.url ? scrambleText(link.url) : undefined,
-        };
-        return `<span class="diigoItemFlag">${JSON.stringify(data)}</span>`;
-      },
+        });
+      },    
     },
     {
-      detectionRegEx: /<a [^>]*>[^<]*<\/a>/g,
-      extractionRegEx: /href=\"([^\"]*)\"[^>]*>([^<]*)<\/a>/g,
-      renderMatch: ([ fullMatch, url, title ]) =>
-        `<a href="${scrambleText(url)}">${scrambleText(title)}</a>`,
+      ...DiigoLink,
+      renderMatch: ([ fullMatch, url, title ]) => DiigoLink.renderFromData({
+        url: scrambleText(url),
+        title: scrambleText(title),
+      }),
     },
   ];
   const scrambleWithCustomRule = makeScramblerWithCustomRules({ rules });
