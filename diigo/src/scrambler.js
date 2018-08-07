@@ -91,8 +91,8 @@ const scrambleContent = content => {
     },
     {
       ...DiigoFormatting,
-      renderMatch: ([ fullMatch, style, text ]) => DiigoFormatting.renderFromData({
-        style,
+      renderMatch: ([ fullMatch, classes, text ]) => DiigoFormatting.renderFromData({
+        classes,
         text: scrambleText(text),
       }),
     },

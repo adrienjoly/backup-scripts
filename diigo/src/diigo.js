@@ -20,10 +20,10 @@ const DiigoLink = {
 
 const DiigoFormatting = {
   detectionRegEx: /<span class=\"text-[^"]*\">[^<]*<\/span>/g,
-  extractionRegEx: /<span class=\"text-([^"]*)\">([^<]*)<\/span>/g,
-  getMatchData: ([ fullMatch, style, text ]) => ({ style, text }),
-  renderFromData: ({ style, text }) => `<span class="text-${style}">${text}</span>`,
-}; // style can be: 'bold', 'italic', 'strike'
+  extractionRegEx: /<span class=\"(text-[^"]*)\">([^<]*)<\/span>/g,
+  getMatchData: ([ fullMatch, classes, text ]) => ({ classes, text }),
+  renderFromData: ({ classes, text }) => `<span class="${classes}">${text}</span>`,
+}; // style can be a space-separated combination of: 'text-bold', 'text-italic', 'text-strike'
 
 module.exports = {
   DiigoItemFlag,
