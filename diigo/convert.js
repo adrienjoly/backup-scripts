@@ -69,22 +69,14 @@ const renderHTML = html => html
     }
     return text;
   })
-  // .replace(/<[^>]*>/g, '') // TODO: re-enable ?
   .replace(/&gt;/, '>');
-  // TODO: also replace other HTML entities
-
-const renderMarkdownContent = content => {
-  const text = renderHTML(content);
-  return /^\{.*\}$/.test(text) ? JSON.parse(text).title : text;
-  // TODO: also include plain text that may surround the JSON links
-  // TODO: create a different function that is able to also extract the `url` field of the JSON
-};
+  // TODO: also replace other HTML entities ?
 
 const indent = (text, depth = 0) => `${''.padStart(depth * 2)}${text}`;
 
 const renderIndentedNodes = (logFct, nodes = [], depth = 0) => nodes
   .forEach(node => {
-    logFct(indent(`- ${renderMarkdownContent(node.content)}`, depth)),
+    logFct(indent(`- ${renderHTML(node.content)}`, depth)),
     renderIndentedNodes(logFct, getChildNodes(node), depth + 1);
   });
 
@@ -92,6 +84,3 @@ const renderIndentedNodes = (logFct, nodes = [], depth = 0) => nodes
 // actual rendering
 
 renderIndentedNodes(console.log, rootNodes);
-
-// TODO also render to YAML objects (incl. urls of links and basic text formatting)
-

@@ -102,7 +102,6 @@ const scrambleContent = content => {
   ];
   const scrambleWithCustomRule = makeScramblerWithCustomRules({ rules });
   return scrambleWithCustomRule(content);
-  // TODO: also leave HTML elements as is
 };
 
 const scrambleNode = node => ({
