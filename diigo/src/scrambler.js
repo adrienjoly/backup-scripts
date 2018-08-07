@@ -109,7 +109,7 @@ const defaultTextScrambler = makeTextScrambler({
 });
 
 const richTextScrambler = makeTextScrambler({
-  makeLetterPicker: () => () => makeCharacterPicker('abcdefghijklmnopqrstuvwxyz'),
+  makeLetterPicker: () => makeCharacterPicker('abcdefghijklmnopqrstuvwxyz'),
   makeNumberPicker: () => makeCharacterPicker('0123456789'),
 });
 
@@ -120,5 +120,7 @@ const makeNodeScrambler = contentScrambler => node => ({
 });
 
 module.exports = {
-  scrambleNode: makeNodeScrambler(makeContentScrambler(defaultTextScrambler)),
+  scrambleNode: makeNodeScrambler(
+    makeContentScrambler({ scrambleText: defaultTextScrambler })
+  ),
 };
