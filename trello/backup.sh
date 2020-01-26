@@ -2,8 +2,6 @@
 
 set -e # this script will exit if any command returns a non-null value
 
-source .env # must define TRELLO_API_KEY and TRELLO_TOKEN
-
 BACKUP_PATH="$PWD"
 # ℹ️ the script will generate a subdirectory in it like: 2018-07-29_12-13-18_backup
 
@@ -11,7 +9,10 @@ mkdir -p $BACKUP_PATH
 
 echo "Backing up trello boards to a subdirectory of $BACKUP_PATH ..."
 
-docker run -t -e TRELLO_API_KEY=$TRELLO_API_KEY -e TRELLO_TOKEN=$TRELLO_TOKEN \
+# docker run -it jtpio/trello-full-backup /bin/sh
+# then: $ cat /usr/local/lib/python3.6/site-packages/trello_full_backup/backup.py
+           
+docker run -t --rm --env-file ./.env \
            -v $BACKUP_PATH:/app jtpio/trello-full-backup trello-full-backup --attachment-size -1 --organizations
            # --closed-boards --archived-cards
 
