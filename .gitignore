@@ -2,3 +2,6 @@
 *_backup
 *_backup_archived
 *_backup.*
+*diff*.log
+spotify/spotify.txt
+spotify/spotify.txt.bak
