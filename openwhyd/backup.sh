@@ -4,6 +4,7 @@ TIMESTAMP="$(date +'%Y-%m-%d_%H-%M')_backup"
 BACKUP_PATH="${PWD}/${TIMESTAMP}"
 
 # ℹ️ the script will generate a subdirectory in it like: 2018-07-29_12-13-18_backup
+echo "Output directory: ${BACKUP_PATH}"
 mkdir -p $BACKUP_PATH
 
 source ./.env # loads PROFILE_URL
