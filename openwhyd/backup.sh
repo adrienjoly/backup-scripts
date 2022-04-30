@@ -14,6 +14,9 @@ echo "Backing up Openwhyd playlists from ${PROFILE_URL} to ${BACKUP_PATH} ..."
 docker build -t "openwhyd-pl-dl" https://github.com/adrienjoly/openwhyd-pl-dl.git
 docker run -it --rm \
            -v "${BACKUP_PATH}:/app" -w "/app" "openwhyd-pl-dl" \
+           "/bin/bash" -c "curl -sS \"${PROFILE_URL}?format=json&limit=999999\" | jq . > posts.json"
+docker run -it --rm \
+           -v "${BACKUP_PATH}:/app" -w "/app" "openwhyd-pl-dl" \
            "/bin/bash" -c "/bin/bash <(wget -qO- https://raw.githubusercontent.com/adrienjoly/openwhyd-pl-dl/master/openwhyd-pl-dl-json.sh) ${PROFILE_URL}"
 
 echo "✅ Done."
