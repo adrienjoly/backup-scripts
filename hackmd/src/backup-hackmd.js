@@ -51,35 +51,8 @@ const [, , HACKMD_EMAIL, HACKMD_PWD] = process.argv;
 
   // resend the request
   const response = await fetch(interceptedRequest.url(), options);
-  console.warn({body: await response.body }) // => ReadableStream { locked: false, state: 'readable', supportsBYOB: false }
-
-  // const body = await response.arrayBuffer()
   const blob = await response.blob()
-  console.warn({blob}) // => Blob { size: 50654, type: 'application/zip; charset=utf-8' } }
-  const body = await blob.stream()
-  console.warn({body}) // => ReadableStream { locked: false, state: 'readable', supportsBYOB: false }
-  const buffer = await blob.arrayBuffer()
-  console.warn({buffer})
-  process.stdout.write(Buffer.from(buffer));
-  // fs.writeFileSync("coucou.zip", buffer)
-  
-
-  // await new Promise((resolve, reject) => {
-  //   body.pipeTo(process.stdout.writable);
-  //   body.on("error", reject);
-  //   process.stdout.fileStream.on("finish", resolve);
-  // });
-
-
-  // process.stdout.write(Buffer.from(base64String, 'base64').toString('utf8'), 'utf-8');
-  // console.warn({size})
-  // fs.writeFileSync("coucou.zip", text, "utf-8")
-  // process.stdout.write(text, "utf-8");
-
-  // console.warn("waiting...");
-  // await page.waitForTimeout(5000); // wait for 5 seconds
-
-  // await page.screenshot({path: 'example4.png'});
-  console.warn("closing");
+  console.warn(`downloading ${blob.size} bytes, type: ${blob.type}...`)
+  process.stdout.write(Buffer.from(await blob.arrayBuffer()));
   await browser.close();
 })();
