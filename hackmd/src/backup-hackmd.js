@@ -15,13 +15,17 @@ const [, , HACKMD_EMAIL, HACKMD_PWD] = process.argv;
   if (DEBUG) await page.screenshot({path: 'login-scren.png'});
   await page.click("input[type=submit]");
 
-  await new Promise((resolve) =>
-    page.on("framenavigated", (frame) => {
+  await new Promise((resolve) =>{
+    const handler = (frame) => {
       const url = frame.url();
       console.warn(`navigated to ${url}`);
-      if (url === "https://hackmd.io/?nav=overview") resolve(frame);
-    })
-  );
+      if (url === "https://hackmd.io/?nav=overview") {
+        page.off("framenavigated", handler); // stop intercepting these events
+        resolve(frame);
+      }
+    }
+    page.on("framenavigated", handler)
+  });
 
   console.warn("waiting...");
   await page.waitForTimeout(5000); // wait for 5 seconds
