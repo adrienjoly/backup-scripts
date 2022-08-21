@@ -1,62 +1,56 @@
 const puppeteer = require("puppeteer");
 
-const DEBUG = false
+const DEBUG = false;
 
 const [, , HACKMD_EMAIL, HACKMD_PWD] = process.argv;
 
+const interceptRequests = async (page) => {
+  await page.setRequestInterception(true);
+  return {
+    untilRequest: (targetURL) =>
+      new Promise((resolve) => {
+        const handler = (req) => {
+          if (req.url() === targetURL) {
+            req.abort();
+            page.off("request", handler);
+            page.setRequestInterception(false).then(() => resolve(req));
+          } else {
+            req.continue();
+          }
+        };
+        page.on("request", handler);
+      }),
+  };
+};
+
 (async () => {
-  const browser = await puppeteer.launch({
-    headless: true,
-  });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
+
+  // login
   await page.goto("https://hackmd.io/login", { waitUntil: "networkidle2" });
   await page.type("input[type=email]", HACKMD_EMAIL);
   await page.type("input[type=password]", HACKMD_PWD);
-  if (DEBUG) await page.screenshot({path: 'login-scren.png'});
+  if (DEBUG) await page.screenshot({ path: "login-scren.png" });
+  const intercept = await interceptRequests(page);
   await page.click("input[type=submit]");
+  const interceptedRequest = await intercept.untilRequest(
+    "https://hackmd.io/me"
+  );
 
-  await new Promise((resolve) =>{
-    const handler = (frame) => {
-      const url = frame.url();
-      console.warn(`navigated to ${url}`);
-      if (url === "https://hackmd.io/?nav=overview") {
-        page.off("framenavigated", handler); // stop intercepting these events
-        resolve(frame);
-      }
-    }
-    page.on("framenavigated", handler)
-  });
-
-  console.warn("waiting...");
-  await page.waitForTimeout(5000); // wait for 5 seconds
-
-  await page.setRequestInterception(true);
-
-  page
-    .goto("https://hackmd.io/exportAllNotes")
-    .catch((e) => console.warn("(i) ignored error:", e.message));
-
-  const interceptedRequest = await new Promise((resolve) => {
-    page.on("request", (req) => {
-      console.warn(`intercepted ${req.method()} ${req.url()}`)
-      req.abort();
-      resolve(req);
-    });
-  });
-
+  // request the backup
   const cookies = await page.cookies();
-  const options = {
+  const response = await fetch("https://hackmd.io/exportAllNotes", {
     encoding: null,
     headers: {
       ...interceptedRequest.headers,
-      "Cookie": cookies.map((ck) => ck.name + "=" + ck.value).join(";"),
+      Cookie: cookies.map((ck) => ck.name + "=" + ck.value).join(";"),
     },
-  };
+  });
 
-  // resend the request
-  const response = await fetch(interceptedRequest.url(), options);
-  const blob = await response.blob()
-  console.warn(`downloading ${blob.size} bytes, type: ${blob.type}...`)
+  // download the backup
+  const blob = await response.blob();
+  console.warn(`downloading ${blob.size} bytes, type: ${blob.type}...`);
   process.stdout.write(Buffer.from(await blob.arrayBuffer()));
   await browser.close();
 })();
