@@ -32,29 +32,25 @@ const [, , HACKMD_EMAIL, HACKMD_PWD] = process.argv;
     .goto("https://hackmd.io/exportAllNotes")
     .catch((e) => console.warn("(i) ignored error:", e.message));
 
-  const xRequest = await new Promise((resolve) => {
-    page.on("request", (interceptedRequest) => {
-      console.warn(`intercepted ${interceptedRequest.method()} ${interceptedRequest.url()}`)
-      interceptedRequest.abort();
-      resolve(interceptedRequest);
+  const interceptedRequest = await new Promise((resolve) => {
+    page.on("request", (req) => {
+      console.warn(`intercepted ${req.method()} ${req.url()}`)
+      req.abort();
+      resolve(req);
     });
   });
 
+  const cookies = await page.cookies();
   const options = {
     encoding: null,
-    headers: xRequest.headers,
+    headers: {
+      ...interceptedRequest.headers,
+      "Cookie": cookies.map((ck) => ck.name + "=" + ck.value).join(";"),
+    },
   };
 
-  /* add the cookies */
-  const cookies = await page.cookies();
-  options.headers.Cookie = cookies
-    .map((ck) => ck.name + "=" + ck.value)
-    .join(";");
-
-  console.warn(xRequest.url(), options)
-
-  /* resend the request */
-  const response = await fetch(xRequest.url(), options);
+  // resend the request
+  const response = await fetch(interceptedRequest.url(), options);
   console.warn({body: await response.body }) // => ReadableStream { locked: false, state: 'readable', supportsBYOB: false }
 
   // const body = await response.arrayBuffer()
