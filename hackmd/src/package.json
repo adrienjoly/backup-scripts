@@ -1,0 +1,11 @@
+{
+  "name": "backup-hackmd",
+  "version": "0.0.0",
+  "description": "",
+  "main": "backup-hackmd.js",
+  "author": "Adrien Joly",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^16.2.0"
+  }
+}
