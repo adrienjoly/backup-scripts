@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/adrienjoly/backup-scripts#readme",
   "devDependencies": {
-    "jest": "^23.4.2"
+    "jest": "^29.3.1"
   }
 }
