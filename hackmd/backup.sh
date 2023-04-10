@@ -10,6 +10,8 @@ source ./.env # loads HACKMD_EMAIL and HACKMD_PWD
 
 echo "Backing up HackMD notes for ${HACKMD_EMAIL} to ${BACKUP_FILE} ..."
 
+nvm use || true # try to use the right version of node.js
+(cd src/ && npm install)
 node src/backup-hackmd.js "${HACKMD_EMAIL}" "${HACKMD_PWD}" > "${BACKUP_FILE}"
 
 echo "✅ Done."
