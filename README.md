@@ -2,7 +2,11 @@
 
 This repository contains a set of scripts that I run regularly to backup my content from local and online locations.
 
-So far, just Trello and Spotify are supported.
+## Supported sources
+
+Fully operational:
+- Boards from Trello
+- Playlists and saved/liked tracks from Spotify
 
 In the future, I also plan to add support for:
 - Diigo (bookmarks)
@@ -11,9 +15,13 @@ In the future, I also plan to add support for:
 ## Features and design decisions
 
 - Does not require to install any dependency except Docker
-- Each backup process is split into 4 scripts: backup, diff, archive and clean-up
-- There's just one manual step, optional: check changes since last backup
-- Store the last backup in a directory that can be synced online
+- Each backup process is split into 4 scripts:
+    - `backup`: gather the data to backup, into a local file or directory
+    - `diff-changes`: display what data was added/removed/changed since the last backup
+    - `zip-and-upload`: move the local backup to a directory for long-term storage
+    - `clean-up`: remove previous backups from the long-term storage directory, to save some space
+- There's just one step that is manual/interactive: `diff-changes`, and it's optional
+- Store the last backup in a long-term storage directory that can be synced online (e.g. Google Drive)
 - The backup scripts can be run locally, or from a server
 
 ## Status
