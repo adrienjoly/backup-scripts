@@ -5,8 +5,11 @@ This repository contains a set of scripts that I run regularly to backup my cont
 ## Supported sources
 
 Fully operational:
-- Boards from Trello
 - Playlists and saved/liked tracks from Spotify
+- Playlists and tracks added to Openwhyd
+
+May not work as expected because of bugs from external docker images:
+- Boards from Trello
 
 In the future, I also plan to add support for:
 - Diigo (bookmarks)
