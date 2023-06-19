@@ -11,8 +11,9 @@ echo "Backing up trello boards to a subdirectory of $BACKUP_PATH ..."
 
 # docker run -it jtpio/trello-full-backup /bin/sh
 # then: $ cat /usr/local/lib/python3.6/site-packages/trello_full_backup/backup.py
-           
-docker run -t --rm --env-file ./.env \
+
+source .env # initializes TRELLO_API_KEY and TRELLO_TOKEN
+docker run -t --rm  -e TRELLO_API_KEY="${TRELLO_API_KEY}" -e TRELLO_TOKEN="${TRELLO_TOKEN}" \
            -v $BACKUP_PATH:/app jtpio/trello-full-backup trello-full-backup --attachment-size -1 --organizations
            # --closed-boards --archived-cards
 
