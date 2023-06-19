@@ -1,5 +1,7 @@
 set -e # this script will exit if any command returns a non-null value
 
+# for verbose logs, pass DEBUG='*'
+
 TIMESTAMP="$(date +'%Y-%m-%d_%H-%M')_backup"
 BACKUP_FILE="${PWD}/hackmd-${TIMESTAMP}.zip"
 
@@ -10,9 +12,8 @@ source ./.env # loads HACKMD_EMAIL and HACKMD_PWD
 
 echo "Backing up HackMD notes for ${HACKMD_EMAIL} to ${BACKUP_FILE} ..."
 
-nvm use || true # try to use the right version of node.js
-(cd src/ && npm install)
-node src/backup-hackmd.js "${HACKMD_EMAIL}" "${HACKMD_PWD}" > "${BACKUP_FILE}"
+(cd src/ && NODE_VERSION=$(cat ../.nvmrc) ~/.nvm/nvm-exec npm install)
+NODE_VERSION=$(cat .nvmrc) HACKMD_EMAIL="${HACKMD_EMAIL}" HACKMD_PWD="${HACKMD_PWD}" DEBUG="${DEBUG}" ~/.nvm/nvm-exec node src/backup-hackmd.js "${HACKMD_EMAIL}" "${HACKMD_PWD}" > "${BACKUP_FILE}"
 
 echo "✅ Done."
 echo "ℹ️ Next steps: run ./diff-changes.sh && zip-and-upload.sh && ./clean-up.sh"
