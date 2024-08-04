@@ -4,6 +4,7 @@
 
 The procedure below assumes that you want to encrypt your Google backup archives before uploading them to a (cold) storage service, and that the corresponding passphrase is stored in your Bitwarden password manager account.
 
+0. install `gpg`: `$ brew install gnupg`
 1. create your own `.env` file, from the provided example: `cp .env.example .env`
 2. install bitwarden CLI: `$ brew install bitwarden-cli`
 3. login to bitwarden: `$ bw login`
