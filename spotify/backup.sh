@@ -1,11 +1,11 @@
 set -e # this script will exit if any command returns a non-null value
 
-DEST_FILE="spotify.txt"
+DEST_FILE="spotify.json"
 
 echo "Backing up Spotify playlists to ${DEST_FILE} ..."
 
 rm -f "${DEST_FILE}.bak"; mv "${DEST_FILE}" "${DEST_FILE}.bak" || true 
-python3 "spotify-backup.py" "${DEST_FILE}" --dump=liked,playlists
+python3 "spotify-backup.py" "${DEST_FILE}" --format=json --dump=liked,playlists
 
 # TODO: get rid of spotify-backup.py, use Docker instead:
 # docker run -it --rm --env-file ./.env --expose 43019 -p 43019:43019 \

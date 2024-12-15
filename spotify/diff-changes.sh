@@ -2,8 +2,8 @@
 
 OUTPUT_FILE="diff.log"
 
-PREV_FILE="spotify.txt.bak"
-LAST_FILE="spotify.txt"
+PREV_FILE="spotify.json.bak"
+LAST_FILE="spotify.json"
 
 echo "Generating diff of last two backups => ${OUTPUT_FILE} ..."
 diff "${PREV_FILE}" "${LAST_FILE}" > "${OUTPUT_FILE}"
