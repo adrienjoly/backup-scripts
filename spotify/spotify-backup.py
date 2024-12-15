@@ -161,7 +161,7 @@ def main():
 	# List liked songs
 	if 'liked' in args.dump:
 		logging.info('Loading liked songs...')
-		liked_tracks = spotify.list('users/{user_id}/tracks'.format(user_id=me['id']), {'limit': 50})
+		liked_tracks = spotify.list('me/tracks', {'limit': 50})
 		playlists += [{'name': 'Liked Songs', 'tracks': liked_tracks}]
 
 	# List all playlists and the tracks in each playlist
