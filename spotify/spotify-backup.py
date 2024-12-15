@@ -188,14 +188,18 @@ def main():
 			for playlist in playlists:
 				f.write(playlist['name'] + '\r\n')
 				for track in playlist['tracks']:
-					if track['track'] is None:
+					try:
+						if track['track'] is None or track['track'].get('artists') is None:
+							continue
+						f.write('{name}\t{artists}\t{album}\t{uri}\r\n'.format(
+							uri=track['track'].get('uri', 'N/A'),
+							name=track['track'].get('name', 'N/A'),
+							artists=', '.join([artist['name'] for artist in track['track']['artists'] if artist and 'name' in artist]),
+							album=track['track'].get('album', {}).get('name', 'N/A')
+						))
+					except (KeyError, TypeError):
+						logging.warning(f"Skipping track due to missing or invalid data: {track}")
 						continue
-					f.write('{name}\t{artists}\t{album}\t{uri}\r\n'.format(
-						uri=track['track']['uri'],
-						name=track['track']['name'],
-						artists=', '.join([artist['name'] for artist in track['track']['artists']]),
-						album=track['track']['album']['name']
-					))
 				f.write('\r\n')
 	logging.info('Wrote file: ' + args.file)
 
