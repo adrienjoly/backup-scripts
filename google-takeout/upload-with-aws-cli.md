@@ -25,10 +25,15 @@ Then, check the connection and list available buckets:
 $ aws s3 ls --endpoint-url https://s3.fr-par.scw.cloud
 ```
 
+> [!IMPORTANT]
+> - As suggested in the instructions, double check that the cluster's location was updated everywhere in the file.
+> - To prevent `Part number must be an integer between 1 and 10000, inclusive` errors on large files, given that uploads to Scaleway are limited to 1000 chunks, make sure that the `multipart_chunksize` setting has a value equal or higher than the size of the file divided by 1000.
+
 ## 3. Upload the file
 
-Avoid spaces and special characters in the file path to upload.
-
 ```sh
-$ aws s3 --endpoint-url https://s3.fr-par.scw.cloud cp "/path-to-archive/takeout-xxx-001.tgz.gpg" s3://name_of_bucket/
+$ aws s3 cp \
+  --endpoint-url https://s3.fr-par.scw.cloud \
+  /path-to-archive/takeout-xxx-001.tgz.gpg \
+  s3://name_of_bucket/
 ```
