@@ -1,3 +1,10 @@
+> [!IMPORTANT]
+> So far, I did not manage to make these instructions work on 50 GB files.
+> - `aws s3 cp` systematically fails with error: `(InvalidArgument) when calling the UploadPart operation: Part number must be an integer between 1 and 1000, inclusive`
+> - `aws s3api put-object --bucket ajbackup --storage-class GLACIER --key archive.zip --body ./archive.zip` also failed with error: `(EntityTooLarge) when calling the PutObject operation (reached max retries: 2): Your proposed upload exceeds the maximum allowed size` (before I specified the `--storage-class GLACIER`, at least)
+>
+> => Instead, I'm uploading via the Scaleway's web interface, with a stable internet connection. 
+
 # Uploading files to Scaleway using AWS CLI
 
 Scaleway's documentation mentions that AWS CLI is recommended to upload large files, with https://www.scaleway.com/en/docs/storage/object/api-cli/object-operations/#putobject.
@@ -37,3 +44,9 @@ $ aws s3 cp \
   /path-to-archive/takeout-xxx-001.tgz.gpg \
   s3://name_of_bucket/
 ```
+
+## Reference links
+
+- CLI suggested by Scaleway: [Understanding Object Storage object operations | Scaleway Documentation](https://www.scaleway.com/en/docs/object-storage/api-cli/object-operations/#putobject) (`aws s3api put-object` => no progress bar while uploading)
+- AWS reference documentation for `put-object` API: [put-object — AWS CLI 1.38.8 Command Reference](https://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html)
+- AWS reference documentation for `aws s3 cp` command: [cp — AWS CLI 1.38.8 Command Reference](https://docs.aws.amazon.com/cli/latest/reference/s3/cp.html#:~:text=Uploading%20a%20local%20file%20stream%20to%20S3)
