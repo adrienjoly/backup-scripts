@@ -4,28 +4,5 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Convert Outliner",
-      "program": "${workspaceFolder}/diigo/convert.js",
-      "args": [
-        "diigo-outliner-sample.json",
-        ">${workspaceFolder}/diigo/output.txt",
-      ],
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Jest All",
-      "program": "${workspaceFolder}/diigo/node_modules/.bin/jest",
-      "cwd": "${workspaceFolder}/diigo",
-      "args": ["--env=node"],
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "windows": {
-        "program": "${workspaceFolder}/diigo/node_modules/jest/bin/jest",
-      }
-    }
   ]
 }

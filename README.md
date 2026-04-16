@@ -13,7 +13,7 @@ May not work as expected:
 - Markdown notes from hackmd.io
 
 In the future, I also plan to add support for:
-- Diigo (bookmarks)
+- Raindrop.io (bookmarks)
 - local ssh keys
 
 ## Features and design decisions
