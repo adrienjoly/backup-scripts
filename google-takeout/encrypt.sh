@@ -6,8 +6,10 @@ set -e
 
 source .env # must define BITWARDEN_ENTRY_ID, cf $ brew install bitwarden-cli && bw list items --search "Personal data backup" | jq '.[0].id'
 
-echo "🔒 getting gpg password from bitwarden..."
-GPG_PASSPHRASE="$(bw get password ${BITWARDEN_ENTRY_ID})"
+if [ -z "${GPG_PASSPHRASE}" ]; then
+	echo "🔒 getting gpg password from bitwarden..."
+	GPG_PASSPHRASE="$(bw get password ${BITWARDEN_ENTRY_ID})"
+fi
 
 for INPUT_FILE in "$@"; do
 	DEST_FILE="${INPUT_FILE}.gpg"
