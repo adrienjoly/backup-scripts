@@ -19,3 +19,4 @@ for INPUT_FILE in "$@"; do
 done
 
 echo "ℹ️ Next steps: upload crypted files to a safe place"
+echo "💡 Uploading large files to Scaleway's Object Storage? Use Safari instead of Chrome for a more stable experience.
